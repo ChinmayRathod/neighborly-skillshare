@@ -1,0 +1,108 @@
+
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import Navbar from "@/components/Navbar";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+
+const Signin = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Simple validation
+    if (!formData.email || !formData.password) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    
+    // In a real app, this would connect to Supabase
+    console.log("Form submitted:", formData);
+    toast.success("Signed in successfully!");
+    
+    // Reset form
+    setFormData({
+      email: "",
+      password: "",
+    });
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      
+      <main className="flex-grow py-8">
+        <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold">Sign in to your account</CardTitle>
+              <CardDescription>
+                Welcome back to SkillSwap
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">                
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email Address</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="john@example.com"
+                    required
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password">Password</Label>
+                    <Link to="/forgot-password" className="text-sm text-teal-600 hover:underline">
+                      Forgot password?
+                    </Link>
+                  </div>
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Enter your password"
+                    required
+                  />
+                </div>
+                
+                <Button type="submit" className="w-full">Sign In</Button>
+                
+                <div className="text-center text-sm text-gray-500">
+                  Don't have an account yet?{" "}
+                  <Link to="/signup" className="text-teal-600 hover:underline">
+                    Sign up
+                  </Link>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default Signin;
