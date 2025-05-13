@@ -7,7 +7,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Explore from "./pages/Explore";
 import Matches from "./pages/Matches";
-import Messages from "./pages/Messages";
+import ConversationList from "./pages/ConversationList";
+import ConversationDetail from "./pages/ConversationDetail";
 import Signup from "./pages/Signup";
 import Signin from "./pages/Signin";
 import NotFound from "./pages/NotFound";
@@ -24,7 +25,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/explore" element={<Explore />} />
           <Route path="/matches" element={<Matches />} />
-          <Route path="/messages" element={<Messages />} />
+          <Route path="/messages" element={<ConversationList />} />
+          <Route path="/messages/:id" element={<ConversationDetail />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/signin" element={<Signin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
