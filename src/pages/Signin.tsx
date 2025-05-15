@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -16,13 +16,17 @@ const Signin = () => {
   });
   const { signIn, isLoading, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Get redirect path from location state or default to explore
+  const from = location.state?.from?.pathname || "/explore";
 
   // Use useEffect to handle navigation
   useEffect(() => {
     if (user) {
-      navigate("/explore");
+      navigate(from, { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, navigate, from]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -56,8 +60,8 @@ const Signin = () => {
     }
   };
 
-  // Don't navigate inline, only return null if needed
-  if (user) {
+  // Don't navigate inline, return null after rendering is complete if already authenticated
+  if (user && !isLoading) {
     return null;
   }
 
