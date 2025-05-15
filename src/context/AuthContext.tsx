@@ -8,13 +8,14 @@ type AuthContextType = {
   user: User | null;
   session: Session | null;
   isLoading: boolean;
+  // Updated return types to match actual Supabase response
   signIn: (email: string, password: string) => Promise<{
-    error: Error | null;
-    data: Session | null;
+    error: any | null;
+    data: { session: Session | null; user: User | null } | null;
   }>;
   signUp: (email: string, password: string, fullName: string, location: string) => Promise<{
-    error: Error | null;
-    data: Session | null;
+    error: any | null;
+    data: { session: Session | null; user: User | null } | null;
   }>;
   signOut: () => Promise<void>;
 };
