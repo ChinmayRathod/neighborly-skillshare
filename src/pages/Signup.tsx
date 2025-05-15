@@ -1,12 +1,13 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +17,14 @@ const Signup = () => {
     confirmPassword: "",
     location: ""
   });
+  const { signUp, isLoading, user } = useAuth();
+  const navigate = useNavigate();
+
+  // If user is already logged in, redirect to explore page
+  if (user) {
+    navigate("/explore");
+    return null;
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -25,7 +34,7 @@ const Signup = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Simple validation
@@ -39,18 +48,19 @@ const Signup = () => {
       return;
     }
     
-    // In a real app, this would connect to Supabase
-    console.log("Form submitted:", formData);
-    toast.success("Account created successfully! Please check your email to verify your account.");
-    
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      location: ""
-    });
+    try {
+      const { error } = await signUp(formData.email, formData.password, formData.name, formData.location);
+      
+      if (error) {
+        toast.error(error.message || "Failed to create account");
+      } else {
+        toast.success("Account created successfully! You can now sign in.");
+        navigate("/signin");
+      }
+    } catch (err) {
+      console.error("Sign up error:", err);
+      toast.error("An unexpected error occurred");
+    }
   };
 
   return (
@@ -131,7 +141,9 @@ const Signup = () => {
                   />
                 </div>
                 
-                <Button type="submit" className="w-full">Sign Up</Button>
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? "Creating account..." : "Sign Up"}
+                </Button>
                 
                 <div className="text-center text-sm text-gray-500">
                   Already have an account?{" "}
