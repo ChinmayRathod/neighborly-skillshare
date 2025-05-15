@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Input } from "@/components/ui/input";
@@ -17,11 +17,12 @@ const Signin = () => {
   const { signIn, isLoading, user } = useAuth();
   const navigate = useNavigate();
 
-  // If user is already logged in, redirect to explore page
-  if (user) {
-    navigate("/explore");
-    return null;
-  }
+  // Use useEffect to handle navigation
+  useEffect(() => {
+    if (user) {
+      navigate("/explore");
+    }
+  }, [user, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -47,13 +48,18 @@ const Signin = () => {
         toast.error(error.message || "Failed to sign in");
       } else {
         toast.success("Signed in successfully!");
-        navigate("/explore");
+        // Don't navigate here, let the useEffect handle it
       }
     } catch (err) {
       console.error("Sign in error:", err);
       toast.error("An unexpected error occurred");
     }
   };
+
+  // Don't navigate inline, only return null if needed
+  if (user) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
