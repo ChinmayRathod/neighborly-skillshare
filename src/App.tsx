@@ -14,8 +14,16 @@ import Signin from "./pages/Signin";
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ChatIcon from "./components/ChatIcon";
+import { useAuth } from "./context/AuthContext";
 
 const queryClient = new QueryClient();
+
+// ChatIconWrapper component to conditionally render the chat icon
+const ChatIconWrapper = () => {
+  const { user } = useAuth();
+  return user ? <ChatIcon /> : null;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
